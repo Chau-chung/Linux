@@ -17,7 +17,7 @@ int main()
 
         execl("/usr/bin/ls", "ls", "-l", "-a", "--color", NULL);
         
-        //exit(1);
+        // exit(1);
     }
 
     // father
