@@ -14,6 +14,8 @@ int main()
         // child
         printf("child process pid: %d\n", getpid());
         sleep(2);
+        
+        extern char**environ;
 
         execl("/usr/bin/ls", "ls", "-l", "-a", "--color", NULL);
         
