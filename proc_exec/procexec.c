@@ -19,6 +19,16 @@ int main()
 
         execl("/usr/bin/ls", "ls", "-l", "-a", "--color", NULL);
         
+        char *const argv[] = 
+        {
+            (char*)"ls",
+            (char*)"-l",
+            (char*)"-a",
+            (char*)"--color",
+            NULL
+        };
+        execv("/usr/bin/ls", argv);
+
         // exit(1);
     }
 
