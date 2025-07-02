@@ -28,7 +28,10 @@ int main()
             NULL
         };
 
-        execv("/usr/bin/ls", argv);
+        // execl("/opt/homebrew/bin/htop", "htop", NULL);
+        execlp("htop", "htop", NULL);
+        // execv("/usr/bin/ls", argv);
+        // execvp("ls", argv);
 
         // exit(1);
     }
