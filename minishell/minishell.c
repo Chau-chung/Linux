@@ -18,7 +18,7 @@ int lastcode = 0;
 
 void Die()
 {
-    exit(1);
+    exit(-1);
 }
 
 const char* GetHome()
@@ -45,9 +45,9 @@ const char* GetHostName()
     return hostname;
 }
 
-const char *GetCwd()
+const char* GetCwd()
 {
-    const char *cwd = getenv("PWD");
+    const char* cwd = getenv("PWD");
     if(cwd == NULL) return "None";
 
     return cwd;
@@ -72,7 +72,7 @@ void MakeCommandLineAndPrint()
 int GetUserCommand(char command[], size_t n)
 {
     char* cmd = fgets(command, n, stdin);
-    
+
     if(cmd == NULL) return -1;
     command[strlen(command) - 1] = ZERO;
 
@@ -84,7 +84,7 @@ void SplitCommand(char command[], size_t n)
     gArgv[0] = strtok(command, SEP);
 
     int index = 1;
-    while((gArgv[index++] = strtok(NULL, SEP)));
+    while((gArgv[index++] = strtok(NULL, SEP))); // 先赋值，再判断，strtok最后返回NULL，gArgv最后一个元素为NULL，并且判断结束
 }
 
 void ExecuteCommand()
@@ -113,9 +113,8 @@ void ExecuteCommand()
 
 void Cd()
 {
-    const char *path = gArgv[1];
-
-    if(path == NULL) path = GetHome();
+    const char* path = gArgv[1];
+    if(path == NULL) path = GetHome(); // path 不为空
 
     chdir(path);
 
@@ -128,21 +127,23 @@ void Cd()
 
 int CheckBuildin()
 {
-    int yes = 0;
-    const char *enter_cmd = gArgv[0];
+    int flag = 0;
+
+    const char* enter_cmd = gArgv[0];
     if(strcmp(enter_cmd, "cd") == 0)
     {
-        yes = 1;
+        flag = 1;
         Cd();
     }
     else if(strcmp(enter_cmd, "echo") == 0 && strcmp(gArgv[1], "$?") == 0)
     {
-        yes = 1;
+        flag = 1;
         printf("%d\n", lastcode);
+
         lastcode = 0;
     }
 
-    return yes;
+    return flag;
 }
 
 int main()
@@ -155,9 +156,9 @@ int main()
 
         // 2.获取用户命令字符串
         char usercommand[SIZE];
-        
+
         int n = GetUserCommand(usercommand, sizeof(usercommand));
-        if(n <= 0) return 1;
+        if(n <= 0) return -1;
 
         // 3.命令行字符串分割
         SplitCommand(usercommand, sizeof(usercommand));
