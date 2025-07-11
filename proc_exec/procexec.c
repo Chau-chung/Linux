@@ -11,29 +11,45 @@ int main()
     pid_t id = fork();
     if(id == 0)
     {
-        // child
-        printf("child process pid: %d\n", getpid());
-        sleep(2);
-        
-        extern char**environ;
+        putenv("ENV0=00000");
 
-        execl("/usr/bin/ls", "ls", "-l", "-a", "--color", NULL);
-        
-        char *const argv[] = 
+        char* const argv[] =
         {
-            (char*)"ls",
-            (char*)"-l",
+            // (char*)"ls",
+            // (char*)"-l",
+            // (char*)"-a",
+            // (char*)"--color",
+
+            (char*)"testexec",
             (char*)"-a",
-            (char*)"--color",
+            (char*)"-c",
+
             NULL
         };
 
+        char* const envp[] =
+        {
+            (char*)"ENV1=11111",
+            (char*)"ENV2=22222",
+
+            NULL
+        };
+
+        extern char** environ;
+
+        printf("child pid: %d\n", getpid());
+        sleep(2);
+
         // execl("/usr/bin/top", "top", NULL);
         // execlp("top", "top", NULL);
-        execv("/usr/bin/ls", argv);
+        // execle("/usr/bin/ls", "ls", NULL, envp);
+        // execv("/usr/bin/ls", argv);
         // execvp("ls", argv);
+        execvpe("./testexec", argv, environ);
 
-        // exit(1);
+        // execve("/usr/bin/ls", argv, envp); // system call
+
+        exit(-1);
     }
 
     // father
@@ -43,8 +59,7 @@ int main()
     {
         printf("father wait success, child exit code: %d\n", WEXITSTATUS(statu));
     }
-    
-    sleep(2);
+
     printf("procexec end..!\n");
 
     return 0;

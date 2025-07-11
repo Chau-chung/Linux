@@ -1,8 +1,10 @@
-bin=procexec
-src=procexec.c
+.PHONY:all
+all:procexec testexec
 
-$(bin):$(src)
+procexec:procexec.c
 	gcc -o $@ $^
+testexec:testexec.cc
+	g++ -o $@ $^ -std=c++11
 .PHONY:clean
 clean:
-	rm $(bin)
+	rm procexec testexec
