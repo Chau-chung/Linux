@@ -6,3 +6,4 @@ $(bin):$(src)
 .PHONY:clean
 clean:
 	rm $(bin)
+
