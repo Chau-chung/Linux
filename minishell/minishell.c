@@ -2,15 +2,33 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <ctype.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 #define SIZE 512
 #define ZERO '\0'
 #define SEP " "
 #define NUM 32
 #define SkipPath(p) do { p += (strlen(p) - 1); while(*p != '/') --p; }while(0)
+#define SkipSpace(cmd, pos) do{\
+    while(1){\
+        if(isspace(cmd[pos])) ++pos;\
+        else break;\
+    }\
+}while(0)
+
+#define None_Redir 0
+#define In_Redir   1
+#define Out_Redir  2
+#define App_Redir  3
+
+int redir_type = None_Redir;
+char* filename = NULL;
 
 char cwd[SIZE*2];
 char* gArgv[NUM];
@@ -94,6 +112,29 @@ void ExecuteCommand()
     if(id < 0) Die();
     else if(id == 0)
     {
+        if(filename != NULL)
+        {
+            if(redir_type == In_Redir)
+            {
+                int fd = open(filename, O_RDONLY);
+                dup2(fd, 0);
+            }
+            else if(redir_type == Out_Redir)
+            {
+                int fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+                dup2(fd, 1);
+            }
+            else if(redir_type == App_Redir)
+            {
+                int fd = open(filename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+                dup2(fd, 1);
+            }
+            else
+            {
+                // do nothing
+            }
+        }
+
         // child
         execvp(gArgv[0], gArgv);
         exit(errno);
@@ -146,11 +187,54 @@ int CheckBuildin()
     return flag;
 }
 
+void CheckRedir(char cmd[])
+{
+    int pos = 0;
+    int end = strlen(cmd);
+
+    while(pos < end)
+    {
+        if(cmd[pos] == '>')
+        {
+            if(cmd[pos + 1] == '>')
+            {
+                cmd[pos++] = 0;
+                ++pos;
+                redir_type = App_Redir;
+                SkipSpace(cmd, pos);
+                filename = cmd + pos;
+            }
+            else
+            {
+                cmd[pos++] = 0;
+                redir_type = Out_Redir;
+                SkipSpace(cmd, pos);
+                filename = cmd + pos;
+            }
+        }
+        else if(cmd[pos] == '<')
+        {
+            cmd[pos++] = 0;
+            redir_type = In_Redir;
+            SkipSpace(cmd, pos);
+            filename = cmd + pos;
+        }
+        else
+        {
+            ++pos;
+        }
+    }
+}
+
 int main()
 {
     int quit = 0;
     while(!quit)
     {
+        // 0.重置
+        redir_type = None_Redir;
+        filename = NULL;
+
         // 1.输出命令行
         MakeCommandLineAndPrint();
 
@@ -159,6 +243,14 @@ int main()
 
         int n = GetUserCommand(usercommand, sizeof(usercommand));
         if(n <= 0) return -1;
+
+        // 2.1 check redir
+        CheckRedir(usercommand);
+        
+        // 2.2 debug
+        // printf("cmd: %s\n", usercommand);
+        // printf("redir: %d\n", redir_type);
+        // printf("filename: %s\n", filename);
 
         // 3.命令行字符串分割
         SplitCommand(usercommand, sizeof(usercommand));
