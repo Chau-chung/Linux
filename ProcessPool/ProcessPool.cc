@@ -5,3 +5,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "Task.hpp"
+
+int main()
+{
+    return 0;
+}
