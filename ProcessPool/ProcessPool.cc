@@ -7,6 +7,10 @@
 #include "Task.hpp"
 
 // master
+class Channel
+{
+
+}
 
 int main()
 {
