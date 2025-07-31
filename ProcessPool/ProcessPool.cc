@@ -10,6 +10,10 @@
 class Channel
 {
 
+private:
+    int _wfd;
+    pid_t _subprocessid;
+    std::string _name;
 }
 
 int main()
