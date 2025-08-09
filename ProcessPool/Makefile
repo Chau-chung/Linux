@@ -2,4 +2,4 @@ processpool: ProcessPool.cc
 	g++ -o $@ $^ -std=c++11
 .PHONY:clean
 clean:
-	rm -f ProcessPool
+	rm ProcessPool
