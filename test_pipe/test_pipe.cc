@@ -5,3 +5,13 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+void SubProcessWrite(int wfd)
+{
+
+}
+
+void FatherProcessRead(int rfd)
+{
+
+}
