@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
+const int size = 1024;
+
 void SubProcessWrite(int wfd)
 {
 
