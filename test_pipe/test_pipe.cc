@@ -26,7 +26,6 @@ void FatherProcessRead(int rfd)
     
 }
 
-// must to done
 int main()
 {
     
