@@ -28,6 +28,5 @@ void FatherProcessRead(int rfd)
 
 int main()
 {
-    
     return 0;
 }
