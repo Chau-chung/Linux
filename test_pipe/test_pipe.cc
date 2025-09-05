@@ -11,18 +11,15 @@ const int size = 1024;
 std::string getOtherMessage()
 {
     
-
 }
 
 void SubProcessWrite(int wfd)
 {
 
-
 }
 
 void FatherProcessRead(int rfd)
 {
-
     
 }
 
