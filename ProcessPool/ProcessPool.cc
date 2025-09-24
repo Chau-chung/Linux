@@ -9,6 +9,7 @@
 // master
 class Channel
 {
+public:
 
 private:
     int _wfd;
