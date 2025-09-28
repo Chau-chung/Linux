@@ -71,7 +71,7 @@ void FatherProcessRead(int rfd)
         }
         
         // sleep(1);
-        // break;
+        break;
     }
 }
 
