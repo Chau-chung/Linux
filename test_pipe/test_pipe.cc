@@ -26,19 +26,19 @@ void SubProcessWrite(int wfd)
 {
     int pipesize = 0;
     std::string message = "father, this is subprocess!";
-    char c = 'a';
+    char c = 'A';
     while (true)
     {
         std::cout << "write message: " << std::endl;
         std::string info = message + getOtherMessage(); // 子进程发给父进程的message
         write(wfd, info.c_str(), info.size()); // 写入管道的时候，没有写入\0 -- 没必要
 
-        sleep(5); // 子进程写慢点
+        // sleep(5); // 子进程写慢点
         // write(wfd, &c, 1);
         // std::cout << "pipesize: " << ++pipesize << "write charactor is: " << c++ << std::endl;
         // if (c == 'G') break;
 
-        // sleep(1);
+        sleep(1);
     }
     
     std::cout << "subprocess write done.." << std::endl;
@@ -49,7 +49,7 @@ void FatherProcessRead(int rfd)
     char inbuffer[size]; // c99, gnu g99
     while (true)
     {
-        // sleep(1);
+        sleep(2);
         std::cout << "father read data from pipe" << std::endl;
         // sleep(500);
         ssize_t n = read(rfd, inbuffer, sizeof(inbuffer) - 1);
@@ -71,7 +71,7 @@ void FatherProcessRead(int rfd)
         }
         
         // sleep(1);
-        break;
+        // break;
     }
 }
 
